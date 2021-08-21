@@ -4,35 +4,41 @@ import { data } from './mock';
 
 export default class App extends Component {
     state={
-        search: '',
-        list: data,
+        name:'',
+        major: '',
+        select:'id',
+        data: data,
     }
   render() {
-      const onSearch =(e) =>{
-        //   this.setState({ search: e.target.value});
-          const newData = data.filter((value)=>{
-          let list = value.name.toLocaleLowerCase();
-          return list.includes(e.target.value.toLocaleLowerCase());
-          });
-        //   const onId =(e) =>{
-        //     this.setState({ search: e.id.value});
-        // };
-         this.setState({list:newData});
-     
-    }
+      const onChange =(e) =>{
+        const list = data.filter((value)=> {
+          if(Number.isInteger(value[this.state.select])){
+        let name = value[this.state.select].toString().toLocaleLowerCase() 
+        return name.includes(e.target.value.toLocaleLowerCase())
+      }
+      else{
+        let name = value[this.state.select].toLocaleLowerCase() 
+        return name.includes(e.target.value.toLocaleLowerCase())
+      }
+    })
+     this.setState({ [e.target.name]: e.target.value, data:list});
+      };
+      const onSelect = (e) =>{
+        console.log({select: e.target.value});
+      }
     return (
       <div>
         <div className="wrapper"></div>
         <input 
         type="text" 
-        onChange ={onSearch}
-        onSubmit = {this.handleSubmit}
+        onSelect ={onChange}
+   
        />
        
-        <select name="" id="" >
-        <option value="">ID</option>
-        <option value="">Name</option>
-        <option value="">Major</option>
+        <select name="" id="" onChange={onSelect} >
+        <option value="id">ID</option>
+        <option value="name">Name</option>
+        <option value="major">Major</option>
         </select>
        <table border='1' style={{ borderCollapse:'collapse', width:'600px'}}>
         <thead>
@@ -44,7 +50,7 @@ export default class App extends Component {
         </thead>
         <tbody>
             {
-                this.state.list.map((value)=>(
+                this.state.data.map((value)=>(
 
                 <tr>
                     <td>{value.id}</td>
